@@ -50,6 +50,21 @@
 1. Terraform сконфигурирован и создание инфраструктуры посредством Terraform возможно без дополнительных ручных действий, стейт основной конфигурации сохраняется в бакете или Terraform Cloud
 2. Полученная конфигурация инфраструктуры является предварительной, поэтому в ходе дальнейшего выполнения задания возможны изменения.
 
+**Решение:**
+
+[Создание бакета и сервисного аккаунта] (./sa_bucket)
+
+![](/img/sa_bucket/apply.png)
+
+
+
+[Создание VPC и подсетей] (./ter-cluster)
+
+![](/img/ter-cluster_only_subnets/init.png)
+
+![](/img/ter-cluster_only_subnets/apply.png)
+
+
 ---
 ### Создание Kubernetes кластера
 
@@ -71,6 +86,30 @@
 2. В файле `~/.kube/config` находятся данные для доступа к кластеру.
 3. Команда `kubectl get pods --all-namespaces` отрабатывает без ошибок.
 
+**Решение:**
+Дисклаймер: Работа выполнялась в несколько подходов с перерывами, между ними инфраструктура удалялась для экономии денег в облаке. Скриншоты сняты с финальной версии, поэтому здесь и далее на скриншотах будут встречаться ресурсы из следующих заданий.
+
+[Создание ВМ] (./ter-cluster)
+
+![](/img/ter-cluster_k8s/apply.png)
+
+После выполнения apply мы получаем inventory.ini, а также в k8s-cluster.yml вносится публичный IP управляющей ноды в supplementary_addresses_in_ssl_keys.
+
+[k8s-cluster.yml.tpl] (./ter-cluster/k8s-cluster.yml.tpl) в нём также активированы:
+kubeconfig_localhost: true
+kubeconfig_localhost_ansible_host: true
+
+
+[Остальная конфигурация kubespray] (./kubespray) В addons.yml активированы для дальнейших заданий:
+ingress_nginx_enabled: true
+ingress_nginx_host_network: true
+
+![](/img/kubespray/kubespray_run.png)
+
+![](/img/kubespray/kubespray_finished.png)
+
+![](/img/kubespray/kubectl.png)
+
 ---
 ### Создание тестового приложения
 
@@ -88,6 +127,14 @@
 
 1. Git репозиторий с тестовым приложением и Dockerfile.
 2. Регистри с собранным docker image. В качестве регистри может быть DockerHub или [Yandex Container Registry](https://cloud.yandex.ru/services/container-registry), созданный также с помощью terraform.
+
+**Решение:**
+
+[Тестовое приложение] (./diplodocker) Дальше он будет GitLab для задания с CI/CD
+
+![](/img/sample_docker_image/build_and_push_manual.png)
+
+https://hub.docker.com/layers/romanishkov/diplodocker/0.0.2/images/sha256-5e6727756fc23f25b12ac5e73013969eaa0a082bb21941a8110ff2681b5d1c27?context=repo
 
 ---
 ### Подготовка cистемы мониторинга и деплой приложения
@@ -109,6 +156,20 @@
 2. Http доступ на 80 порту к web интерфейсу grafana.
 3. Дашборды в grafana отображающие состояние Kubernetes кластера.
 4. Http доступ на 80 порту к тестовому приложению.
+
+**Решение:**
+
+[kube-prometheus] (./kube-prometheus) К готовым манифестам добавлен [ingress для доступа из вне по 80 порту] (./kube-prometheus/grafana-custom-ingress.yaml)
+
+![](/img/grafana/dashboard.png)
+
+[Манифесты для тестового приложения] (./diplodocker)
+
+![](/img/sample_docker_image/manual_apply.png)
+
+![](/img/sample_docker_image/available.png)
+
+
 ---
 ### Установка и настройка CI/CD
 
@@ -126,6 +187,45 @@
 1. Интерфейс ci/cd сервиса доступен по http.
 2. При любом коммите в репозиторие с тестовым приложением происходит сборка и отправка в регистр Docker образа.
 3. При создании тега (например, v1.0.0) происходит сборка и отправка с соответствующим label в регистри, а также деплой соответствующего Docker образа в кластер Kubernetes.
+
+**Решение:**
+
+[Использую ВМ с готовым образом GitLab] (./ter-cluster)
+
+http://158.160.45.163/root/diplodocker
+
+Создаю раннер с конфигурацией [values.yaml] (./gitlab/values.yaml):
+
+![](/img/gitlab/runner.png)
+
+Создаю сервисный аккаунт для деплоя приложения [sa.yaml] (./gitlab/sa.yaml):
+
+![](/img/gitlab/sa_for_gitlab.png)
+
+.gitlab-ci.yml для сборки и деплоя:
+http://158.160.45.163/root/diplodocker/-/blob/main/.gitlab-ci.yml или [.gitlab-ci.yml] (./diplodocker/.gitlab-ci.yml)
+
+Добавляем необходимые переменные:
+
+![](/img/gitlab/var.png)
+
+Вносим правку в проект, делаем commit. Выполняется сборка и отправка в registry: https://hub.docker.com/layers/romanishkov/diplodocker/aeb80429/images/sha256-bb6fafcd5d2bdaa2be6aa8f26ff815718098cc8346fc3184ef38525a8f6a095e
+
+![](/img/gitlab/build_push_notag.png)
+
+Добавляем тег, происходит сборка, отправка в registry и деплой:
+
+![](/img/gitlab/build_push_tag.png)
+
+https://hub.docker.com/layers/romanishkov/diplodocker/1.2/images/sha256-9ef161a7394c55110faf880b60a99ff841cc2d018ea595f10260f2f9a131ea16
+
+![](/img/gitlab/deploy.png)
+
+![](/img/gitlab/pipelines_images.png)
+
+![](/img/gitlab/result.png)
+
+
 
 ---
 ## Что необходимо для сдачи задания?
