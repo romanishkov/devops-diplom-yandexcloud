@@ -130,7 +130,7 @@ ingress_nginx_host_network: true
 
 **Решение:**
 
-[Тестовое приложение](./diplodocker) Дальше он будет GitLab для задания с CI/CD
+[Тестовое приложение](./diplodocker) + http://158.160.45.163/root/diplodocker
 
 ![](/img/sample_docker_image/build_and_push_manual.png)
 
