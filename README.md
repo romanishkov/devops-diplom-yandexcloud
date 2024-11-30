@@ -170,6 +170,13 @@ https://hub.docker.com/layers/romanishkov/diplodocker/0.0.2/images/sha256-5e6727
 ![](/img/sample_docker_image/available.png)
 
 
+![](/img/gitlab/terraform-pipeline.png)
+
+http://158.160.45.163/root/ter-cluster
+
+http://158.160.45.163/root/ter-cluster/-/blob/main/.gitlab-ci.yml
+
+
 ---
 ### Установка и настройка CI/CD
 
