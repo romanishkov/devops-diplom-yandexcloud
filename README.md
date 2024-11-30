@@ -52,13 +52,13 @@
 
 **Решение:**
 
-[Создание бакета и сервисного аккаунта] (./sa_bucket)
+[Создание бакета и сервисного аккаунта](./sa_bucket)
 
 ![](/img/sa_bucket/apply.png)
 
 
 
-[Создание VPC и подсетей] (./ter-cluster)
+[Создание VPC и подсетей](./ter-cluster)
 
 ![](/img/ter-cluster_only_subnets/init.png)
 
@@ -89,18 +89,18 @@
 **Решение:**
 Дисклаймер: Работа выполнялась в несколько подходов с перерывами, между ними инфраструктура удалялась для экономии денег в облаке. Скриншоты сняты с финальной версии, поэтому здесь и далее на скриншотах будут встречаться ресурсы из следующих заданий.
 
-[Создание ВМ] (./ter-cluster)
+[Создание ВМ](./ter-cluster)
 
 ![](/img/ter-cluster_k8s/apply.png)
 
 После выполнения apply мы получаем inventory.ini, а также в k8s-cluster.yml вносится публичный IP управляющей ноды в supplementary_addresses_in_ssl_keys.
 
-[k8s-cluster.yml.tpl] (./ter-cluster/k8s-cluster.yml.tpl) в нём также активированы:
+[k8s-cluster.yml.tpl](./ter-cluster/k8s-cluster.yml.tpl) в нём также активированы:
 kubeconfig_localhost: true
 kubeconfig_localhost_ansible_host: true
 
 
-[Остальная конфигурация kubespray] (./kubespray) В addons.yml активированы для дальнейших заданий:
+[Остальная конфигурация kubespray](./kubespray) В addons.yml активированы для дальнейших заданий:
 ingress_nginx_enabled: true
 ingress_nginx_host_network: true
 
@@ -130,7 +130,7 @@ ingress_nginx_host_network: true
 
 **Решение:**
 
-[Тестовое приложение] (./diplodocker) Дальше он будет GitLab для задания с CI/CD
+[Тестовое приложение](./diplodocker) Дальше он будет GitLab для задания с CI/CD
 
 ![](/img/sample_docker_image/build_and_push_manual.png)
 
@@ -159,11 +159,11 @@ https://hub.docker.com/layers/romanishkov/diplodocker/0.0.2/images/sha256-5e6727
 
 **Решение:**
 
-[kube-prometheus] (./kube-prometheus) К готовым манифестам добавлен [ingress для доступа из вне по 80 порту] (./kube-prometheus/grafana-custom-ingress.yaml)
+[kube-prometheus](./kube-prometheus) К готовым манифестам добавлен [ingress для доступа из вне по 80 порту](./kube-prometheus/grafana-custom-ingress.yaml)
 
 ![](/img/grafana/dashboard.png)
 
-[Манифесты для тестового приложения] (./diplodocker)
+[Манифесты для тестового приложения](./diplodocker)
 
 ![](/img/sample_docker_image/manual_apply.png)
 
@@ -190,20 +190,20 @@ https://hub.docker.com/layers/romanishkov/diplodocker/0.0.2/images/sha256-5e6727
 
 **Решение:**
 
-[Использую ВМ с готовым образом GitLab] (./ter-cluster)
+[Использую ВМ с готовым образом GitLab](./ter-cluster)
 
 http://158.160.45.163/root/diplodocker
 
-Создаю раннер с конфигурацией [values.yaml] (./gitlab/values.yaml):
+Создаю раннер с конфигурацией [values.yaml](./gitlab/values.yaml):
 
 ![](/img/gitlab/runner.png)
 
-Создаю сервисный аккаунт для деплоя приложения [sa.yaml] (./gitlab/sa.yaml):
+Создаю сервисный аккаунт для деплоя приложения [sa.yaml](./gitlab/sa.yaml):
 
 ![](/img/gitlab/sa_for_gitlab.png)
 
 .gitlab-ci.yml для сборки и деплоя:
-http://158.160.45.163/root/diplodocker/-/blob/main/.gitlab-ci.yml или [.gitlab-ci.yml] (./diplodocker/.gitlab-ci.yml)
+http://158.160.45.163/root/diplodocker/-/blob/main/.gitlab-ci.yml или [.gitlab-ci.yml](./diplodocker/.gitlab-ci.yml)
 
 Добавляем необходимые переменные:
 
