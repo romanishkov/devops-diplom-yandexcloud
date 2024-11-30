@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: diplodocker
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: diplodocker-deployment
+  namespace: diplodocker
+  labels:
+    app: diplodocker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: diplodocker
+  template:
+    metadata:
+      labels:
+        app: diplodocker
+    spec:
+      containers:
+      - name: diplodocker
+        image: romanishkov/diplodocker:0.0.2
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 200m
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+
+

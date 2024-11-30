@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: diplodocker-ingress
+  namespace: diplodocker
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /diplodocker
+        pathType: Prefix
+        backend:
+          service:
+            name: diplodocker-svc
+            port:
+              number: 80
